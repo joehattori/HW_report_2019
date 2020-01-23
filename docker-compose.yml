@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ghdl:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/winter-report
+    tty: true
