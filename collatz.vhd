@@ -1,62 +1,91 @@
-Library IEEE;
+library IEEE;
+use IEEE.std_logic_arith.all;
+use IEEE.std_logic_unsigned.all;
 use IEEE.std_logic_1164.all;
-use IEEE.std_logic_unsigned."+";
-use IEEE.std_logic_unsigned."*";
-use IEEE.numeric_std.ALL;
+use work.types.all;
 
 entity Collatz is
   port (
     clk: in std_logic;
-    reset: in std_logic;
-    start: in std_logic_vector(9 downto 0);
-    peak: out std_logic_vector(17 downto 0);
-    len: out std_logic_vector(7 downto 0);
-    continue: out std_logic
+    clk_count: out std_logic_vector(31 downto 0) := (others => '0');
+    top4: out top4_t := (others => ((others => '0'), (others => '0'), (others => '0')));
+    all_finished: out std_logic := '0'
   );
 end Collatz;
 
 architecture Main of Collatz is
-  signal current_height: std_logic_vector(17 downto 0);
-  signal current_peak: std_logic_vector(17 downto 0);
-  signal current_len: std_logic_vector(7 downto 0);
+  component Mountain is
+    port (
+      clk: in std_logic;
+      go: in std_logic;
+      start: in std_logic_vector(9 downto 0);
+      peak: out std_logic_vector(17 downto 0);
+      len: out std_logic_vector(7 downto 0);
+      continue: out std_logic
+    );
+  end component;
 
-  constant THREE_18: std_logic_vector(17 downto 0) := "000000000000000011";
-  constant ZERO_8: std_logic_vector(7 downto 0) := "00000000";
-  constant ONE_8: std_logic_vector(7 downto 0) := "00000001";
-  constant ONE_18: std_logic_vector(17 downto 0) := "000000000000000001";
+  component Sorter is
+    port (
+      clk: in std_logic;
+      new_result: in result_t;
+      top4: out top4_t
+    );
+  end component;
 
-  function half(num: std_logic_vector) return std_logic_vector is
-  begin
-    return '0' & num(17 downto 1);
-  end function;
+  signal clk_count_sig: std_logic_vector(31 downto 0) := (others => '0');
+  signal all_finished_sig: std_logic := '0';
+  signal go: std_logic := '1';
+  signal start: std_logic_vector(8 downto 0) := (others => '0');
+  signal peak: std_logic_vector(17 downto 0) := (others => '0');
+  signal len: std_logic_vector(7 downto 0) := (others => '0');
+  signal continue: std_logic := '1';
 
+  signal odd_start: std_logic_vector(9 downto 0) := (others => '0');
+
+  signal result_sig: result_t := ((others => '0'), (others => '0'), (others => '0'));
+
+begin
+  mountain_i: Mountain port map (
+    clk => clk,
+    go => go,
+    start => odd_start,
+    peak => peak,
+    len => len,
+    continue => continue
+  );
+
+  sorter_i: Sorter port map (
+    clk => clk,
+    new_result => result_sig,
+    top4 => top4
+  );
+
+  clk_count <= clk_count_sig;
+  odd_start <= start & '1';
+
+  process (clk, all_finished_sig)
   begin
-  Climb: process (clk, reset, start)
+    if rising_edge(clk) and all_finished_sig = '0' then
+      clk_count_sig <= clk_count_sig + 1;
+    end if;
+  end process;
+
+  process (clk)
   begin
-    if reset = '1' then
-      current_height <= ZERO_8 & start;
-      current_peak <= ZERO_8 & start;
-      current_len <= ZERO_8;
-      continue <= '1';
-    elsif clk'event and clk = '1' then
-      if current_height = ONE_18 then
-        continue <= '0';
-      else
-        if current_height(0) = '0' then
-          current_height <= '0' & current_height(17 downto 1);
+    if rising_edge(clk) then
+      if (continue = '0' and all_finished_sig = '0') then
+        result_sig <= (start & '1', peak, len);
+        start <= start + 1;
+
+        if start >= 511 then
+          all_finished <= '1';
         else
-          current_height <= std_logic_vector(to_unsigned(to_integer(unsigned(current_height * THREE_18)) + 1, 18));
+          go <= '1';
         end if;
-
-        if current_height > current_peak then
-          current_peak <= current_height;
-        end if;
-
-        current_len <= current_len + ONE_8;
+      else
+        go <= '0';
       end if;
     end if;
-
-    peak <= current_peak;
-    len <= current_len;
   end process;
 end Main;
