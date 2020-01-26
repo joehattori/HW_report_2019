@@ -22,7 +22,7 @@ architecture Main of Collatz is
     port (
       clk: in std_logic;
       go: in std_logic;
-      start: in std_logic_vector(9 downto 0);
+      start: in std_logic_vector(8 downto 0);
       data: in data_t;
       peak: out std_logic_vector(17 downto 0);
       len: out std_logic_vector(7 downto 0);
@@ -53,7 +53,6 @@ architecture Main of Collatz is
   signal all_finished_reg: std_logic := '0';
   signal go: std_logic := '1';
   signal start: std_logic_vector(8 downto 0) := (others => '0');
-  signal odd_start: std_logic_vector(9 downto 0) := "0000000001";
   signal peak: std_logic_vector(17 downto 0) := (others => '0');
   signal len: std_logic_vector(7 downto 0) := (others => '0');
   signal finished: std_logic_vector(1 downto 0) := (others => '0');
@@ -70,7 +69,7 @@ begin
   mountain_i: Mountain port map (
     clk => clk,
     go => go,
-    start => odd_start,
+    start => start,
     data => data_out,
     peak => peak,
     len => len,
@@ -93,7 +92,6 @@ begin
   );
 
   clk_count <= clk_count_reg;
-  odd_start <= start & '1';
   all_finished <= all_finished_reg;
 
   process (clk, all_finished_reg)
@@ -104,15 +102,13 @@ begin
   end process;
 
   process (clk)
-    variable next_start: std_logic_vector(8 downto 0) := (others => '0');
   begin
     if rising_edge(clk) then
       if finished = "01" and all_finished_reg = '0' then
-        next_start := start + 1;
-        start <= next_start;
         result_reg <= (start & '1', peak, len);
         data_in <= (peak, len);
         addr_ram <= start;
+        start <= start + 1;
         writable <= '1';
 
         if start < 511 then

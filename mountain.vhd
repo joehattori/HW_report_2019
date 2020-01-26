@@ -11,7 +11,7 @@ entity Mountain is
   port (
     clk: in std_logic := '0';
     go: in std_logic := '0';
-    start: in std_logic_vector(9 downto 0) := (others => '0');
+    start: in std_logic_vector(8 downto 0) := (others => '0');
     data: in data_t := ((others => '0'), (others => '0'));
     peak: out std_logic_vector(17 downto 0) := (others => '0');
     len: out std_logic_vector(7 downto 0) := (others => '0');
@@ -26,6 +26,7 @@ architecture Main of Mountain is
   signal len_reg: std_logic_vector(7 downto 0) := (others => '0');
   signal prev_len_reg: std_logic_vector(7 downto 0) := (others => '0');
   signal valid: std_logic := '0';
+  signal odd_start: std_logic_vector(9 downto 0) := (others => '0');
 
   constant ONE: std_logic_vector(17 downto 0) := "000000000000000001";
 
@@ -33,6 +34,7 @@ begin
   peak <= peak_reg;
   len <= len_reg;
   addr <= height_reg(9 downto 1);
+  odd_start <= start & '1';
 
   process (clk)
   begin
@@ -50,7 +52,7 @@ begin
   begin
     if rising_edge(clk) then
       if go = '1' then
-        current_height := "00000000" & start;
+        current_height := "00000000" & odd_start;
         current_peak := (others => '0');
         current_len := (others => '0');
         finished <= '0';
