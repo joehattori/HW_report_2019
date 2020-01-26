@@ -9,5 +9,11 @@ package types is
   end record;
 
   type top4_t is array(0 to 3) of result_t;
-  type top5_t is array(0 to 4) of result_t;
+
+  type data_t is record
+    peak: std_logic_vector(17 downto 0);
+    len: std_logic_vector(7 downto 0);
+  end record;
+
+  type ram_data_t is array(0 to 511) of data_t;
 end package types;

@@ -1,6 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.ALL;
+use IEEE.numeric_std.all;
 use work.types.all;
 
 entity CollatzTb is
@@ -52,8 +52,9 @@ begin
 
       for i in 0 to 3 loop
         report "Start: " & integer'image(to_integer(unsigned(top4(i).start)));
-        report " peak: " & integer'image(to_integer(unsigned(top4(i).peak)));
-        report " len: " & integer'image(to_integer(unsigned(top4(i).len)));
+        report "   Peak: " & integer'image(to_integer(unsigned(top4(i).peak)));
+        report "   Len : " & integer'image(to_integer(unsigned(top4(i).len)));
+        report "";
       end loop;
     end if;
   end process;
