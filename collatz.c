@@ -20,29 +20,30 @@ void sorter(result_t **current_top4, result_t new_result) {
     }
 
     int is_same = 0;
-    int i;
-    for (i = 0; i < 4; i++) {
+    int same_index;
+    for (int i = 0; i < 4; i++) {
         if (current_top4[i]->peak == new_result.peak) {
             is_same = 1;
+            same_index = i;
             break;
         }
     }
 
     if (is_same) {
-        if (current_top4[i]->len < new_result.len) {
-            swap(current_top4[i], &new_result);
+        if (current_top4[same_index]->len < new_result.len) {
+            swap(current_top4[same_index], &new_result);
         }
         return;
     }
 
     int idx;
-    for (i = 3; i >= 0; i--) {
+    for (int i = 3; i >= 0; i--) {
         if (current_top4[i]->peak < new_result.peak) {
             idx = i;
         }
     }
 
-    for (i = 2; i >= idx; i--) {
+    for (int i = 2; i >= idx; i--) {
         swap(current_top4[i], current_top4[i + 1]);
     }
     swap(current_top4[idx], &new_result);
@@ -63,10 +64,7 @@ result_t mountain_result(int start) {
         }
         len++;
     }
-    result_t ans;
-    ans.start = start;
-    ans.len = len;
-    ans.peak = peak;
+    result_t ans = { start, peak, len };
     return ans;
 }
 
@@ -88,13 +86,14 @@ int main() {
 
     init(ans);
 
-    for (int i = 0; i < 511; i++) {
+    for (int i = 0; i < 512; i++) {
         result_t r = mountain_result(2 * i + 1);
         sorter(ans, r);
     }
 
     long long end = _rdtsc();
     printf("It took %lld clocks\n\n", end - start);
+
     for (int i = 0; i < 4; i++) {
         printf("Start: %d\n     Peak: %d\n     Len:  %d\n\n", ans[i]->start, ans[i]->peak, ans[i]->len);
     }
