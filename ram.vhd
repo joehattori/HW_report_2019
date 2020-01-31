@@ -17,8 +17,6 @@ architecture Main of RAM is
   signal ram_reg: ram_data_t := (others => ((others => '0'), (others => '0')));
 
 begin
-  data_out <= ram_reg(to_integer(unsigned(addr)));
-
   process(clk)
   begin
     if rising_edge(clk) then
@@ -27,4 +25,6 @@ begin
       end if;
     end if;
   end process;
+
+  data_out <= ram_reg(to_integer(unsigned(addr)));
 end Main;

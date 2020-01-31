@@ -39,7 +39,7 @@ begin
     wait for 5 ns;
   end process;
 
-  print: process(clk)
+  print: process(clk, all_finished)
   begin
     if rising_edge(clk) and all_finished = '1' and finished = '0' then
       finished <= '1';

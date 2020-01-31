@@ -15,9 +15,6 @@ architecture Main of Sorter is
   signal current_top4: top4_t := (others => ((others => '0'), (others => '0'), (others => '0')));
 
 begin
-
-  top4 <= current_top4;
-
   process(clk)
     variable results: top4_t := (others => ((others => '0'), (others => '0'), (others => '0')));
     variable swp: result_t := ((others => '0'), (others => '0'), (others => '0'));
@@ -53,4 +50,6 @@ begin
       current_top4 <= results;
     end if;
   end process;
+
+  top4 <= current_top4;
 end Main;

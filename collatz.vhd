@@ -101,27 +101,27 @@ begin
     end if;
   end process;
 
-  process
+  process (clk)
   begin
-    wait until rising_edge(clk);
+    if rising_edge(clk) then
+      if finished = "01" and all_finished_reg = '0' then
+        result_reg <= (start & '1', peak, len);
+        data_in <= (peak, len);
+        addr_ram <= start;
+        start <= start + 1;
+        writable <= '1';
 
-    if finished = "01" and all_finished_reg = '0' then
-      result_reg <= (start & '1', peak, len);
-      data_in <= (peak, len);
-      addr_ram <= start;
-      start <= start + 1;
-      writable <= '1';
-
-      if start < 511 then
-        go <= '1';
+        if start < 511 then
+          go <= '1';
+        else
+          all_finished_reg <= '1';
+        end if;
       else
-        all_finished_reg <= '1';
+        writable <= '0';
+        addr_ram <= addr;
+        go <= '0';
       end if;
-    else
-      writable <= '0';
-      addr_ram <= addr;
-      go <= '0';
+      finished(1) <= finished(0);
     end if;
-    finished(1) <= finished(0);
   end process;
 end Main;
