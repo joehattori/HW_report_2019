@@ -22,16 +22,16 @@ begin
     variable results: top4_t := (others => ((others => '0'), (others => '0'), (others => '0')));
     variable swp: result_t := ((others => '0'), (others => '0'), (others => '0'));
     variable new_result_tmp: result_t := ((others => '0'), (others => '0'), (others => '0'));
-    variable equal: std_logic := '0';
+    variable is_equal: std_logic := '0';
   begin
     if rising_edge(clk) then
       results := current_top4;
       new_result_tmp := new_result;
-      equal := '0';
+      is_equal := '0';
 
       for i in 0 to 3 loop
         if results(i).peak = new_result_tmp.peak then
-          equal := '1';
+          is_equal := '1';
           if results(i).len < new_result_tmp.len then
             swp := results(i);
             results(i) := new_result_tmp;
@@ -40,7 +40,7 @@ begin
         end if;
       end loop;
 
-      if equal = '0' then
+      if is_equal = '0' then
         for i in 0 to 3 loop
           if results(i).peak < new_result_tmp.peak then
             swp := results(i);
