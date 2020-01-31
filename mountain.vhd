@@ -93,26 +93,13 @@ begin
             shift := std_logic_vector(to_unsigned(i, 5));
           end if;
         end loop;
-        if shift(4) = '1' then
-          current_height := "0000000000000000" & current_height(17 downto 16);
-          current_len := current_len + "00010000";
-        end if;
-        if shift(3) = '1' then
-          current_height := "00000000" & current_height(17 downto 8);
-          current_len := current_len + "00001000";
-        end if;
-        if shift(2) = '1' then
-          current_height := "0000" & current_height(17 downto 4);
-          current_len := current_len + "00000100";
-        end if;
-        if shift(1) = '1' then
-          current_height := "00" & current_height(17 downto 2);
-          current_len := current_len + "00000010";
-        end if;
-        if shift(0) = '1' then
-          current_height := "0" & current_height(17 downto 1);
-          current_len := current_len + "00000001";
-        end if;
+
+        for i in 4 downto 0 loop
+          if shift(i) = '1' then
+            current_height := std_logic_vector(to_unsigned(0, 2 ** i)) & current_height(17 downto 2 ** i);
+            current_len := current_len + 2 ** i;
+          end if;
+        end loop;
       end if;
     end if;
 
