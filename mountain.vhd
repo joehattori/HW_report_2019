@@ -44,7 +44,7 @@ begin
     end if;
   end process;
 
-  process (clk)
+  mountain: process (clk, go, start)
     variable current_height: std_logic_vector(17 downto 0) := (others => '0');
     variable current_peak: std_logic_vector(17 downto 0) := (others => '0');
     variable current_len: std_logic_vector(7 downto 0) := (others => '0');
@@ -82,7 +82,7 @@ begin
           end if;
 
           current_height := (current_height(16 downto 0) & '1') + current_height;
-          current_len := current_len + 1;
+          current_len := current_len + "00000001";
           if current_peak < current_height then
             current_peak := current_height;
           end if;
