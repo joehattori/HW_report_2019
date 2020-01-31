@@ -45,17 +45,17 @@ begin
       finished <= '1';
     end if;
 
-    if finished = '1' and printed = '0' then
-      printed <= '1';
-      report "results";
-      report "It took " & integer'image(to_integer(unsigned(clk_count))) & " clocks";
+    -- if finished = '1' and printed = '0' then
+    --   printed <= '1';
+    --   report "results";
+    --   report "It took " & integer'image(to_integer(unsigned(clk_count))) & " clocks";
 
-      for i in 0 to 3 loop
-        report "Start: " & integer'image(to_integer(unsigned(top4(i).start)));
-        report "   Peak: " & integer'image(to_integer(unsigned(top4(i).peak)));
-        report "   Len : " & integer'image(to_integer(unsigned(top4(i).len)));
-        report "";
-      end loop;
-    end if;
+    --   for i in 0 to 3 loop
+    --     report "Start: " & integer'image(to_integer(unsigned(top4(i).start)));
+    --     report "   Peak: " & integer'image(to_integer(unsigned(top4(i).peak)));
+    --     report "   Len : " & integer'image(to_integer(unsigned(top4(i).len)));
+    --     report "";
+    --   end loop;
+    -- end if;
   end process;
 end Main;
