@@ -70,15 +70,15 @@ begin
         current_len := prev_len_reg + data.len;
       else
         if current_height(0) = '1' then
-          if current_height(3 downto 0) = "1111" then	
-            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000011011")) + 19) / 8, 18));	
-            current_len := current_len + 6;	
-          elsif current_height(2 downto 0) = "111" then	
-            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000001001")) + 5) / 4, 18));	
-            current_len := current_len + 4;	
-          elsif current_height(1 downto 0) = "11" then	
-            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000000011")) + 1) / 2, 18));	
-            current_len := current_len + 2;	
+          if current_height(3 downto 0) = "1111" then
+            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000011011")) + 19) / 8, 18));
+            current_len := current_len + 6;
+          elsif current_height(2 downto 0) = "111" then
+            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000001001")) + 5) / 4, 18));
+            current_len := current_len + 4;
+          elsif current_height(1 downto 0) = "11" then
+            current_height := std_logic_vector(to_unsigned((to_integer(unsigned(current_height * "000000000000000011")) + 1) / 2, 18));
+            current_len := current_len + 2;
           end if;
 
           current_height := (current_height(16 downto 0) & '1') + current_height;
